@@ -17,9 +17,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			$result = $conn->query($sql);
 			$row_num = $result->num_rows;
 			if($row_num > 0){
-				echo "fsafdsafdsa";
+				// echo "fsafdsafdsa";
 				$row = $result->fetch_assoc();
-				print_r($row) ;
+				// print_r($row) ;
 				$_SESSION["userName"] = $row["userName"];
 				$_SESSION["firstName"] = $row["firstName"];
 				$_SESSION["lastName"] = $row["lastName"];

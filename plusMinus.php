@@ -1,4 +1,11 @@
+<?php 
+require 'php/configDB.php';
+session_start();
+if(empty($_SESSION["userName"])){
+    header('Location:php/login.php');
+}
 
+?>
 
 
 <!DOCTYPE html>
@@ -43,12 +50,13 @@
 
 
         <div ng-show="level !== 0" class="container">
+            <h2>your points : {{points}}</h2>
             <h1 class="active"> {{targil}}</h1>
-            <p ng-click="checkAns('ans1')">{{ansArr[0]}}</p>
-            <p ng-click="checkAns('ans2')">{{ansArr[1]}}</p>
-            <p ng-click="checkAns('ans3')">{{ansArr[2]}}</p>
-            <p ng-click="checkAns('ans4')">{{ansArr[3]}}</p>
-            <p ng-style="{'background-color':getColor()}">{{feedBack}}</p>
+            <p ng-click="checkAns('ans1')"  ng-style="{'background-color':getColor('ans1')}">{{ansArr[0]}}</p>
+            <p ng-click="checkAns('ans2')"  ng-style="{'background-color':getColor('ans2')}">{{ansArr[1]}}</p>
+            <p ng-click="checkAns('ans3')"  ng-style="{'background-color':getColor('ans3')}">{{ansArr[2]}}</p>
+            <p ng-click="checkAns('ans4')"  ng-style="{'background-color':getColor('ans4')}">{{ansArr[3]}}</p>
+            <!--<p ng-style="{'background-color':getColor()}">{{feedBack}}</p>-->
 
             <button ng-show="level !== 0" ng-click="clearLevel()" class="btn btn-info pull-right">change level</button>
         </div>
@@ -63,13 +71,16 @@
 
     <script>
         var app = angular.module('millioneer', []);
-        app.controller('myCtrl', function ($scope, $timeout) {
+        app.controller('myCtrl', function ($scope, $timeout,$http) {
 
 
             $scope.numCorrect = 0;
             $scope.numWrong = 0;
+            $scope.points = 0;
 
             $scope.saveToDB = function(){
+      
+            
 
             }
 
@@ -79,8 +90,8 @@
             }
 
             $scope.clearLevel = function () {
-                $scope.level = 0;
                 $scope.saveToDB();
+                 $scope.level = 0;
             }
 
             $scope.level = 0;
@@ -141,8 +152,10 @@
 
 
             $scope.checkAns = function (selectedAns) {
+                $scope.markAns = selectedAns;
                 if (selectedAns == $scope.correct) {
                     $scope.feedBack = "CORRECT";
+                     $scope.points++;
                     $scope.numCorrect++;
                     $timeout(function () {
                         $scope.resetTargil();
@@ -151,17 +164,33 @@
 
                 } else {
                     $scope.feedBack = "WRONG";
+                    if( $scope.points > 0){
+                         $scope.points--;
+                    }
                     $scope.numWrong++;
                 }
 
             }
 
 
-            $scope.getColor = function () {
-                if ($scope.feedBack == "CORRECT") { return "green"; }
-                if ($scope.feedBack == "WRONG" || $scope.feedBack == "TIME OUT") { return "red"; }
+            $scope.getColor = function (ans) {
+                if ($scope.feedBack == "CORRECT") {
+                    if($scope.markAns == ans)
+                        {
+                            return "green";
+                        }
+                }
+                if ($scope.feedBack == "WRONG" || $scope.feedBack == "TIME OUT") { 
+                    
+                       if($scope.markAns == ans)
+                        {
+                            return "red";
+                        }
+                        
+                 }
 
             }
+ 
 
             $scope.resetTargil = function () {
                 $scope.a = "";

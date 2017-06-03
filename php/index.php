@@ -1,7 +1,9 @@
 <?php 
 require 'configDB.php';
 session_start();
-
+if(empty($_SESSION["userName"]) ){//if the session is exist
+	header('Location:login.php');
+}
 
 ?>
 
